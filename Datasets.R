@@ -23,20 +23,21 @@ data <- data[data$`Death Rate` !=0,]
 
 #Summary
 summary(data$`Death Rate`)
-mean <- mean(data$`Death Rate`)
 summary(data$`Age Adjusted Death Rate`)
 IQR(data$`Death Rate`)
 IQR(data$`Age Adjusted Death Rate`)
-sd<-sd(data$`Death Rate`)
 sd(data$`Age Adjusted Death Rate`)
 boxplot(data$`Death Rate`, data$`Age Adjusted Death Rate`)
 
+#Empirical Rule
+mean <- mean(data$`Death Rate`)
+sd<-sd(data$`Death Rate`)
 low <- mean - (3*sd) 
 high <- mean + (3*sd) 
 low_99_7_percent <- data$`Death Rate`[data$`Death Rate` > low & data$`Death Rate` < high]
 low_99_7_percent
-View(data)
-1196*0.997
+
+
 #Based on Death Rate
 dr.year.sum <- data %>% group_by(Year) %>% summarize(Total = sum(`Death Rate`))
 dr.year <- data %>% group_by(Year) %>% summarize(avg = mean(`Death Rate`), 
@@ -58,11 +59,14 @@ boxplot(dr.year.sum$Total)
 
 dr.ys <- data %>% group_by(Year, Sex) %>% summarize(avg = mean(`Death Rate`))
 View(dr.ys)
+
 dr.yc <- data %>% group_by(Year, `Leading Cause`) %>% summarize(avg = mean(`Death Rate`))
 View(dr.yc)
+
 dr.ysc <- data %>% group_by(Year, Sex, `Leading Cause`) %>% summarize(avg = mean(`Death Rate`))
 View(dr.ysc)
 
+#Plots
 p1 <- ggplot(dr.year, aes(x=Year, y = avg)) + geom_point() + geom_line() + 
   ggtitle("Time Series of Average Death Rate")+
   theme(plot.title = element_text(hjust = 0.5)) + labs(y= "Average")
@@ -74,11 +78,11 @@ plot.drys <- ggplot(dr.ys, aes(x = Year, y = avg, col = Sex)) + geom_point() +
 plot.drys
 
 
-plot.dryc_sep <- ggplot(dr.yc, aes(x = Year, y = avg, col = `Leading Cause`)) + geom_point() + 
-                  geom_line() + ggtitle("Time Series of Average Death Rate by Leading Cause")+
+plot.dryc <- ggplot(dr.yc, aes(x = Year, y = avg, col = `Leading Cause`)) + geom_point() + 
+                   geom_line() + ggtitle("Time Series of Average Death Rate by Leading Cause")+
                    facet_wrap(~`Leading Cause`) + theme(legend.position="none")+
                    theme(plot.title = element_text(hjust = 0.5)) + labs(y= "Average")
-plot.dryc_sep
+plot.dryc
 
 #Based on Adjusted Deaths Rate
 
@@ -91,8 +95,10 @@ View(adr.cause)
 
 adr.ys <- data %>% group_by(Year, Sex) %>% summarize(avg = mean(`Age Adjusted Death Rate`))
 View(adr.ys)
+
 adr.yc <- data %>% group_by(Year, `Leading Cause`) %>% summarize(avg = mean(`Age Adjusted Death Rate`))
 View(adr.yc)
+
 adr.ysc <- data %>% group_by(Year, Sex, `Leading Cause`) %>% summarize(avg = mean(`Age Adjusted Death Rate`))
 View(adr.ysc)
 
@@ -100,6 +106,7 @@ View(adr.ysc)
 plot.adrys <- ggplot(adr.ys, aes(x = Year, y = avg, col = Sex)) + geom_point() + 
   geom_line() + ggtitle("Time Series of Average Age Adjusted Death Rate")+
   theme(plot.title = element_text(hjust = 0.5)) + labs(y= "Average")
+
 plot.drys
 
 
@@ -136,11 +143,6 @@ View(sex)
 View(income)
 View(country)
 
-p2 <- ggplot(year, aes(x = Year, y=avg)) + geom_point() + geom_line() + 
-  ggtitle("Time Series of Average HIV Infection by Year")+
-  theme(plot.title = element_text(hjust = 0.5)) + labs(y= "Average")
-p2
-
 ys <- data2 %>% group_by(Year, Sex) %>% summarize (avg = mean(`Value Numeric`))
 View(ys)
 
@@ -155,6 +157,11 @@ yic <- data2 %>% group_by(Year, Country, `World bank income group`) %>% summariz
 View(yic)
 
 #Plots
+p2 <- ggplot(year, aes(x = Year, y=avg)) + geom_point() + geom_line() + 
+  ggtitle("Time Series of Average HIV Infection by Year")+
+  theme(plot.title = element_text(hjust = 0.5)) + labs(y= "Average")
+p2
+
 plot.ys <- ggplot(ys, aes(x = Year,y = avg, col = Sex)) + geom_point() + geom_line() +
                     ggtitle("Time Series of Average HIV Infection Grouped by Gender") +
                     theme(plot.title = element_text(hjust = 0.5)) + labs(y= "Average")
